@@ -105,6 +105,14 @@ The hybrid path swaps the procedural PNG for AI art:
                                                    └► .dd2vtt + .fvtt.json (art bg, same walls)
 ```
 
+With a local ComfyUI, run the whole hybrid in one command:
+```bash
+python scripts/comfyui_submit.py spec.json --workflow workflow_api.json --out out
+```
+Setup (install ComfyUI + Z-Image Turbo, export an API workflow, title the
+`SECTORFORGE_PROMPT` / `SECTORFORGE_INIT` nodes) is in
+[`skills/sector-forge/references/comfyui-hybrid.md`](skills/sector-forge/references/comfyui-hybrid.md).
+
 ## Foundry v13/v14 notes
 
 The Foundry exporter targets the **v13/v14** Scene data model:

@@ -27,7 +27,8 @@ def sync():
     (SKILL / "scripts").mkdir(parents=True, exist_ok=True)
     (SKILL / "references").mkdir(parents=True, exist_ok=True)
     (SKILL / "examples").mkdir(parents=True, exist_ok=True)
-    for name in ("build_map.py", "geometry.py", "render.py", "repack_image.py"):
+    for name in ("build_map.py", "geometry.py", "render.py", "repack_image.py",
+                 "comfyui_submit.py"):
         shutil.copyfile(REPO / "scripts" / name, SKILL / "scripts" / name)
     for ref in (REPO / "skills" / "sector-forge" / "references").glob("*.md"):
         shutil.copyfile(ref, SKILL / "references" / ref.name)

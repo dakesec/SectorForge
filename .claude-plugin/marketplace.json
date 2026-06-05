@@ -11,7 +11,7 @@
     {
       "name": "sector-forge",
       "description": "Turn narrative direction into VTT-ready sci-fi battlemaps. Claude designs the deck layout; a deterministic engine renders a top-down map and auto-derives walls, doors, and dynamic lighting, exporting Universal VTT (.dd2vtt) and native Foundry VTT v13/v14 scene JSON. Supports circular/non-rectangular rooms and entrance-matching doors.",
-      "version": "0.4.0",
+      "version": "0.5.0",
       "author": {
         "name": "dakesec"
       },

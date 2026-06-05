@@ -196,7 +196,7 @@ def export_foundry(spec, model, image_rel, width_px, height_px, cell_px):
         "lights": lights,
         "tokens": [], "notes": [], "sounds": [], "drawings": [],
         "tiles": [], "templates": [], "regions": [],
-        "flags": {"sector-forge": {"version": "0.4.0", "foundryTarget": "v13-v14"}},
+        "flags": {"sector-forge": {"version": "0.5.0", "foundryTarget": "v13-v14"}},
     }
 
 

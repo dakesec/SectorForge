@@ -11,7 +11,7 @@ description: >
   user asks for a sci-fi dungeon/ship/station map, a VTT-ready battlemap, a
   Foundry-importable scene with walls and lights, an encounter map for a sci-fi
   campaign, or to turn a described location into a playable tactical map.
-version: 0.4.0
+version: 0.5.0
 ---
 
 # SectorForge — Sci-Fi Dungeon Tile Mapper
@@ -107,6 +107,15 @@ For painted/photoreal backgrounds instead of the clean procedural tiles:
    ```
    This rewrites `<name>.dd2vtt` and `<name>.fvtt.json` around the new image.
 
+**Auto-generate via local ComfyUI (one command).** If the user runs a local
+ComfyUI, do the whole hybrid in one step — render, paint, repack:
+```bash
+python ${CLAUDE_PLUGIN_ROOT}/scripts/comfyui_submit.py spec.json --workflow workflow_api.json --out out
+```
+Setup (install ComfyUI + Z-Image, export an API workflow, title the
+`SECTORFORGE_PROMPT` / `SECTORFORGE_INIT` nodes) is in
+`references/comfyui-hybrid.md`. Read it before running.
+
 See `references/vtt-formats.md` for import steps and per-VTT notes.
 
 ## Importing (quick reference)
@@ -121,6 +130,8 @@ See `references/vtt-formats.md` for import steps and per-VTT notes.
 - `references/map-spec-schema.md` — full spec field reference (read before authoring)
 - `references/themes.md` — themes, floor types, prop catalog, lighting recipes
 - `references/vtt-formats.md` — export format details and import instructions
+- `references/comfyui-hybrid.md` — local ComfyUI setup + one-command auto-generation
+- `${CLAUDE_PLUGIN_ROOT}/scripts/comfyui_submit.py` — render + paint (ComfyUI) + repack
 - `${CLAUDE_PLUGIN_ROOT}/scripts/build_map.py` — spec → PNG + UVTT + Foundry
 - `${CLAUDE_PLUGIN_ROOT}/scripts/repack_image.py` — swap in AI art, keep VTT data
 - `${CLAUDE_PLUGIN_ROOT}/examples/derelict-station.json` — worked example
