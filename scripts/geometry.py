@@ -151,20 +151,89 @@ def build_occupancy(spec):
 
     for i, room in enumerate(rooms):
         room.setdefault("id", f"room{i}")
-        cells = room_cells(room)
-        room["_cells"] = cells
+        room["_cells"] = room_cells(room)
         room_by_id[room["id"]] = room
-        for c in cells:
+
+    # Square off each room's wall where a corridor docks, so the corridor meets a
+    # flat face exactly its own width (clean, aligned doorways on any shape).
+    corridors = spec.get("corridors", [])
+    for cor in corridors:
+        if "from" in cor and "to" in cor:
+            _flatten_corridor_docks(cor, room_by_id)
+
+    for room in room_by_id.values():
+        for c in room["_cells"]:
             floor.add(c)
             region_of[c] = room["id"]
 
-    for i, cor in enumerate(spec.get("corridors", [])):
+    for i, cor in enumerate(corridors):
         cid = cor.get("id", f"corr{i}")
         for c in _corridor_cells(cor, room_by_id):
             floor.add(c)
             region_of.setdefault(c, cid)  # don't override a room's cell
 
     return floor, room_by_id, region_of
+
+
+def _flatten_dock(cells, cross, side):
+    """Extend `cells` so the room presents a flat `side` face across the lines in
+    `cross` (row indices for e/w docks, column indices for n/s docks)."""
+    if side in ("e", "w"):
+        xs = [cx for (cx, cy) in cells if cy in cross]
+        if not xs:
+            return
+        face = max(xs) if side == "e" else min(xs)
+        for cy in cross:
+            row = [cx for (cx, c2) in cells if c2 == cy]
+            if side == "e":
+                start = (max(row) + 1) if row else face
+                for cx in range(start, face + 1):
+                    cells.add((cx, cy))
+            else:
+                end = (min(row) - 1) if row else face
+                for cx in range(face, end + 1):
+                    cells.add((cx, cy))
+    else:
+        ys = [cy for (cx, cy) in cells if cx in cross]
+        if not ys:
+            return
+        face = max(ys) if side == "s" else min(ys)
+        for cx in cross:
+            col = [cy for (c2, cy) in cells if c2 == cx]
+            if side == "s":
+                start = (max(col) + 1) if col else face
+                for cy in range(start, face + 1):
+                    cells.add((cx, cy))
+            else:
+                end = (min(col) - 1) if col else face
+                for cy in range(face, end + 1):
+                    cells.add((cx, cy))
+
+
+def _flatten_corridor_docks(cor, room_by_id):
+    a = room_by_id.get(cor["from"])
+    b = room_by_id.get(cor["to"])
+    if not a or not b:
+        return  # _corridor_cells will raise the clear error
+    x0, y0 = int(a["x"] + a["w"] / 2.0), int(a["y"] + a["h"] / 2.0)
+    x1, y1 = int(b["x"] + b["w"] / 2.0), int(b["y"] + b["h"] / 2.0)
+    w = max(1, int(cor.get("width", 2)))
+    half = w // 2
+    span = range(-half, w - half)
+    rows = {y0 + d for d in span}        # horizontal leg occupies these rows (at y0)
+    cols = {x1 + d for d in span}        # vertical leg occupies these cols (at x1)
+
+    # `a` is reached by the horizontal leg (unless the route is purely vertical).
+    if x1 != x0:
+        _flatten_dock(a["_cells"], rows, "e" if x1 > x0 else "w")
+    else:
+        _flatten_dock(a["_cells"], {x0 + d for d in span}, "s" if y1 > y0 else "n")
+
+    # `b` is reached by the vertical leg (unless the route is purely horizontal).
+    if y1 != y0:
+        _flatten_dock(b["_cells"], cols, "n" if y0 < y1 else "s")
+    else:
+        _flatten_dock(b["_cells"], rows, "w" if x0 < x1 else "e")
 
 
 # --- wall edges --------------------------------------------------------------
