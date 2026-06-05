@@ -1,0 +1,14 @@
+{
+  "name": "sector-forge",
+  "version": "0.2.0",
+  "description": "SectorForge — AI-directed sci-fi dungeon/station tile mapper. Claude designs the deck layout from narrative direction; a deterministic engine renders a top-down battlemap and auto-derives walls, doors, and lighting, exporting Universal VTT (.dd2vtt) and native Foundry VTT v13/v14 scene JSON. Optional hybrid path swaps in ComfyUI z-image art while preserving the VTT data.",
+  "author": {
+    "name": "dakesec",
+    "email": "christifer.mulford@gmail.com",
+    "url": "https://github.com/dakesec"
+  },
+  "homepage": "https://github.com/dakesec/SectorForge",
+  "repository": "https://github.com/dakesec/SectorForge",
+  "license": "GPL-3.0",
+  "keywords": ["rpg", "vtt", "foundry", "foundryvtt", "dungeon", "map", "scifi", "battlemap", "uvtt", "dd2vtt", "roll20", "sectorforge"]
+}

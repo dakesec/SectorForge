@@ -1,0 +1,11 @@
+# Python
+__pycache__/
+*.pyc
+
+# Generated map output
+out/
+examples/out/
+
+# OS / editor
+.DS_Store
+Thumbs.db
