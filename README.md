@@ -46,6 +46,11 @@ folder instead:
 After installing, restart Claude Code if prompted. Then use `/dungeon …` or just
 ask for a sci-fi battlemap.
 
+**Using it in regular Claude Desktop / Claude.ai chat threads** (not Claude Code):
+those threads can't load Claude Code plugins, but they can load an uploaded
+**Agent Skill**. Grab [`dist/sector-forge.skill`](dist/) and upload it via
+**Settings → Capabilities → Skills**. See [`dist/README.md`](dist/README.md).
+
 **Verify the engine** (optional, standalone):
 ```bash
 python scripts/build_map.py examples/derelict-station.json --out out
