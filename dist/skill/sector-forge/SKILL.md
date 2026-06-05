@@ -51,6 +51,11 @@ Layout rules of thumb:
   "type": "blast" }` — the engine finds the real opening and spans the door across
   it, so doors always match the entrance. (`autoDoors: true` seals every
   room-corridor opening at once.)
+- For a **maze / warren** (winding corridors with branches and dead ends), add a
+  top-level `maze` block — it carves a labyrinth around your rooms and
+  auto-connects them. See `references/map-spec-schema.md`.
+- For a **textured, organic** look (mottled stone, cracks, glowing growth,
+  spores), use `theme: "eldritch_void"` (texturing auto-on) or set `texture: true`.
 - Add **lights** at fixtures/hazards (range in cells) and **props** for clarity.
 
 ### 3. Build the map files

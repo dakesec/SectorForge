@@ -11,7 +11,7 @@ description: >
   user asks for a sci-fi dungeon/ship/station map, a VTT-ready battlemap, a
   Foundry-importable scene with walls and lights, an encounter map for a sci-fi
   campaign, or to turn a described location into a playable tactical map.
-version: 0.2.0
+version: 0.4.0
 ---
 
 # SectorForge — Sci-Fi Dungeon Tile Mapper
@@ -66,6 +66,12 @@ Layout rules of thumb:
 - For a dark, lights-only scene (derelict, power-out), set top-level
   `"darkness": 1` so Foundry disables global light and only your placed lights
   illuminate. Leave it at `0` (default) for a fully-lit tactical map.
+- For a **maze / warren** (winding connecting corridors with branches and dead
+  ends), add a top-level `maze` block — it carves a labyrinth around your rooms
+  and auto-connects them. See `references/map-spec-schema.md`.
+- For a **textured, organic** look (mottled stone, cracks, glowing growth,
+  spores), use `theme: "eldritch_void"` (texturing auto-on) or set
+  `"texture": true`. For a fully painted look, use the hybrid AI-art path below.
 
 Write the spec to a file, e.g. `out/<name>.json`.
 

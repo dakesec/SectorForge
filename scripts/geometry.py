@@ -18,6 +18,7 @@ Coordinates are in GRID UNITS (cells). Cell (cx, cy) occupies [cx, cx+1] x
 """
 
 import math
+import random
 from collections import defaultdict, deque
 
 
@@ -172,7 +173,148 @@ def build_occupancy(spec):
             floor.add(c)
             region_of.setdefault(c, cid)  # don't override a room's cell
 
+    # Optional maze: winding corridors with branches and dead ends, carved into
+    # the region around rooms/corridors (deterministic from `seed`).
+    mz = spec.get("maze")
+    if mz:
+        seed = int(mz.get("seed", spec.get("seed", 1)))
+        for c in _carve_maze(mz, spec, set(floor), seed):
+            if c not in region_of:
+                floor.add(c)
+                region_of[c] = "maze"
+
+    # Guarantee every area is reachable (tunnel between disconnected components).
+    if mz or spec.get("ensureConnected"):
+        _ensure_connected(floor, region_of)
+
     return floor, room_by_id, region_of
+
+
+# --- maze generation ---------------------------------------------------------
+
+def _carve_maze(mz, spec, blocked, seed):
+    """Recursive-backtracker maze of `cell`-wide passages, routed around blocked
+    (room/corridor) cells. Returns the set of carved floor cells."""
+    rng = random.Random(seed)
+    rx, ry = int(mz.get("x", 0)), int(mz.get("y", 0))
+    rw = int(mz.get("w", spec.get("size", {}).get("w", 20)))
+    rh = int(mz.get("h", spec.get("size", {}).get("h", 20)))
+    pw = max(1, int(mz.get("cell", 2)))     # passage width (cells)
+    wt = max(1, int(mz.get("wall", 1)))     # wall thickness between passages
+    pitch = pw + wt
+    nx = max(1, (rw + wt) // pitch)
+    ny = max(1, (rh + wt) // pitch)
+
+    def node_cells(i, j):
+        X, Y = rx + i * pitch, ry + j * pitch
+        return [(X + a, Y + b) for a in range(pw) for b in range(pw)]
+
+    def blocked_node(i, j):
+        return any(c in blocked for c in node_cells(i, j))
+
+    def gap_cells(i, j, ni, nj):
+        X, Y = rx + i * pitch, ry + j * pitch
+        if ni > i:
+            return [(X + pw + k, Y + b) for k in range(wt) for b in range(pw)]
+        if ni < i:
+            return [(X - wt + k, Y + b) for k in range(wt) for b in range(pw)]
+        if nj > j:
+            return [(X + a, Y + pw + k) for k in range(wt) for a in range(pw)]
+        return [(X + a, Y - wt + k) for k in range(wt) for a in range(pw)]
+
+    start = None
+    for j in range(ny):
+        for i in range(nx):
+            if not blocked_node(i, j):
+                start = (i, j)
+                break
+        if start:
+            break
+    if not start:
+        return set()
+
+    visited = {start}
+    stack = [start]
+    cells = set(node_cells(*start))
+    while stack:
+        i, j = stack[-1]
+        nbrs = []
+        for di, dj in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+            ni, nj = i + di, j + dj
+            if 0 <= ni < nx and 0 <= nj < ny and (ni, nj) not in visited and not blocked_node(ni, nj):
+                nbrs.append((ni, nj))
+        if nbrs:
+            ni, nj = rng.choice(nbrs)
+            cells.update(node_cells(ni, nj))
+            cells.update(gap_cells(i, j, ni, nj))
+            visited.add((ni, nj))
+            stack.append((ni, nj))
+        else:
+            stack.pop()
+
+    loops = float(mz.get("loops", 0.0))   # 0 = perfect maze (max dead ends)
+    if loops > 0:
+        for i in range(nx):
+            for j in range(ny):
+                if (i, j) not in visited:
+                    continue
+                for di, dj in ((1, 0), (0, 1)):
+                    ni, nj = i + di, j + dj
+                    if (ni, nj) in visited and rng.random() < loops:
+                        cells.update(gap_cells(i, j, ni, nj))
+
+    return {c for c in cells if rx <= c[0] < rx + rw and ry <= c[1] < ry + rh and c not in blocked}
+
+
+def _components(floor):
+    remaining = set(floor)
+    comps = []
+    while remaining:
+        seedc = next(iter(remaining))
+        remaining.discard(seedc)
+        comp = {seedc}
+        stack = [seedc]
+        while stack:
+            cx, cy = stack.pop()
+            for dx, dy in ((1, 0), (-1, 0), (0, 1), (0, -1)):
+                n = (cx + dx, cy + dy)
+                if n in remaining:
+                    remaining.discard(n)
+                    comp.add(n)
+                    stack.append(n)
+        comps.append(comp)
+    return comps
+
+
+def _l_path(a, b):
+    (x0, y0), (x1, y1) = a, b
+    cells = set()
+    for x in range(min(x0, x1), max(x0, x1) + 1):
+        cells.add((x, y0))
+    for y in range(min(y0, y1), max(y0, y1) + 1):
+        cells.add((x1, y))
+    return cells
+
+
+def _ensure_connected(floor, region_of):
+    """Tunnel thin passages between disconnected floor components so the whole
+    map is reachable (no-op if already connected)."""
+    comps = _components(floor)
+    if len(comps) <= 1:
+        return
+    comps.sort(key=len, reverse=True)
+    main = comps[0]
+    for comp in comps[1:]:
+        best, bd = None, None
+        for a in comp:
+            for b in main:
+                d = abs(a[0] - b[0]) + abs(a[1] - b[1])
+                if bd is None or d < bd:
+                    bd, best = d, (a, b)
+        for c in _l_path(*best):
+            floor.add(c)
+            region_of.setdefault(c, "tunnel")
+        main |= comp
 
 
 def _flatten_dock(cells, cross, side):
@@ -292,7 +434,7 @@ def _merge_unit_edges(edges):
         else:
             by_x[a].append(b)
 
-    for y, xs in by_y.items():
+    for y, xs in sorted(by_y.items()):
         xs.sort()
         start = prev = xs[0]
         group = [("H", xs[0], y)]
@@ -306,7 +448,7 @@ def _merge_unit_edges(edges):
                 group = [("H", x, y)]
         runs.append((((start, y), (prev + 1, y)), group))
 
-    for x, ys in by_x.items():
+    for x, ys in sorted(by_x.items()):
         ys.sort()
         start = prev = ys[0]
         group = [("V", x, ys[0])]
@@ -324,7 +466,9 @@ def _merge_unit_edges(edges):
 
 
 def merge_edges(walls):
-    return [seg for seg, _ in _merge_unit_edges(walls)]
+    # sorted for deterministic output order (edge tuples contain strings, whose
+    # set-iteration order varies per process under hash randomization)
+    return sorted(seg for seg, _ in _merge_unit_edges(walls))
 
 
 # --- entrances (region interfaces) -------------------------------------------
@@ -348,6 +492,8 @@ def detect_entrances(floor, region_of):
     for pair, edges in pair_edges.items():
         for seg, group in _merge_unit_edges(edges):
             entrances.append({"regions": pair, "segment": seg, "edges": group})
+    # deterministic order (region ids are strings -> hash-randomized set order)
+    entrances.sort(key=lambda e: (tuple(sorted(e["regions"])), e["segment"]))
     return entrances
 
 

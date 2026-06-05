@@ -1,0 +1,36 @@
+{
+  "name": "Antechamber of Echoes",
+  "theme": "eldritch_void",
+  "texture": true,
+  "ambient": "#06040c",
+  "darkness": 0,
+  "seed": 7,
+  "grid": { "cell_px": 100, "distance": 5, "units": "ft", "overlay": true },
+  "size": { "w": 46, "h": 36 },
+
+  "rooms": [
+    { "id": "antechamber", "x": 17, "y": 13, "w": 13, "h": 11, "shape": "octagon", "label": "Antechamber", "floor": "tile" },
+    { "id": "entry",   "x": 1,  "y": 16, "w": 5, "h": 6, "label": "Entry Passage", "floor": "plating" },
+    { "id": "nw",      "x": 3,  "y": 3,  "w": 6, "h": 5, "shape": "ellipse", "label": "Statue Alcove", "floor": "tile" },
+    { "id": "ne",      "x": 37, "y": 3,  "w": 6, "h": 5, "shape": "ellipse", "label": "Statue Alcove", "floor": "tile" },
+    { "id": "lock",    "x": 38, "y": 16, "w": 6, "h": 6, "shape": "circle",  "label": "Lock Alcove",  "floor": "tile" },
+    { "id": "cell",    "x": 20, "y": 30, "w": 7, "h": 5, "label": "Prisoner Cell", "floor": "hazard" },
+    { "id": "sw",      "x": 3,  "y": 29, "w": 6, "h": 5, "shape": "ellipse", "label": "Alcove", "floor": "tile" }
+  ],
+
+  "maze": { "x": 0, "y": 0, "w": 46, "h": 36, "cell": 2, "wall": 1, "loops": 0.07, "seed": 7 },
+
+  "lights": [
+    { "x": 23.5, "y": 18.5, "range": 7, "color": "#9a5adc", "intensity": 0.9, "animation": "pulse" },
+    { "x": 6,    "y": 5,    "range": 4, "color": "#40e0d0", "intensity": 0.7 },
+    { "x": 40,   "y": 5,    "range": 4, "color": "#40e0d0", "intensity": 0.7 },
+    { "x": 41,   "y": 19,   "range": 4, "color": "#9a5adc", "intensity": 0.7, "animation": "pulse" },
+    { "x": 23.5, "y": 32,   "range": 4, "color": "#7a30ff", "intensity": 0.6 }
+  ],
+
+  "props": [
+    { "type": "reactor", "x": 23, "y": 18 },
+    { "type": "console", "x": 40, "y": 18 },
+    { "type": "bed",     "x": 23, "y": 32 }
+  ]
+}

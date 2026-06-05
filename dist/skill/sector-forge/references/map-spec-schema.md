@@ -13,6 +13,10 @@ grid × `grid.cell_px`.
 | `theme`     | string | no       | `clean_ship`     | One of the palettes in `themes.md`. |
 | `ambient`   | string | no       | `#222230`        | Ambient/scene background color (hex). |
 | `darkness`  | number | no       | `0`              | Foundry scene darkness 0–1. `0` = fully lit; `1` = dark, only placed `lights` illuminate (great for derelicts/power-out). Sets `environment.darknessLevel` and toggles global light. |
+| `texture`   | bool   | no       | auto             | Rich organic texturing (mottled stone, cracks, wall growth, spores, vignette). Defaults on for the `eldritch_void` theme, off otherwise. |
+| `seed`      | int    | no       | `1`              | Seed for deterministic procedural generation (the `maze`). Same seed → same map. |
+| `maze`      | object | no       | —                | Carve a labyrinth of winding corridors with branches and dead ends (see below). |
+| `ensureConnected` | bool | no    | `false`          | Tunnel thin passages between any disconnected areas so the whole map is reachable. Always on when `maze` is present. |
 | `grid`      | object | no       | see below        | Grid configuration. |
 | `size`      | object | yes      | `{w:20,h:20}`    | Map size **in cells**: `{ "w": <cols>, "h": <rows> }`. |
 | `rooms`     | array  | yes      | —                | At least one room (the floor). |
@@ -145,6 +149,27 @@ Decorative top-down icons drawn on the floor (not collidable).
 ```
 Types: `console`, `terminal`, `reactor`, `crate`, `bed`/`pod`, plus a generic
 marker for anything else. `x,y` is the cell. See `themes.md` for the catalog.
+
+## `maze` (labyrinth of corridors + dead ends)
+Carves a maze of `cell`-wide passages into a region, routed **around** your rooms
+and corridors, then auto-connects every room to it. Produces winding connecting
+corridors with branches and dead ends — drop your `rooms` in as chambers and the
+maze fills the space between them.
+```json
+"maze": { "x": 0, "y": 0, "w": 46, "h": 36, "cell": 2, "wall": 1, "loops": 0.07, "seed": 7 }
+```
+| Field   | Req | Notes |
+|---------|-----|-------|
+| `x,y`   | no  | Top-left of the maze region in cells (default `0,0`). |
+| `w,h`   | no  | Region size in cells (default = map `size`). |
+| `cell`  | no  | Passage width in cells (default `2`). |
+| `wall`  | no  | Wall thickness between passages (default `1`). |
+| `loops` | no  | 0–1 fraction of extra connections to open. `0` = perfect maze (maximum dead ends); higher = more loops, fewer dead ends (default `0`). |
+| `seed`  | no  | Maze seed (falls back to top-level `seed`). Same seed → same maze. |
+
+Tip: pair the maze with `theme: "eldritch_void"` (organic texturing auto-on) for
+a cosmic-horror warren. Walls and line-of-sight are auto-derived for the maze
+just like rooms, so dynamic lighting works on import.
 
 ## Minimal valid spec
 ```json

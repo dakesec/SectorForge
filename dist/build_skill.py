@@ -31,8 +31,8 @@ def sync():
         shutil.copyfile(REPO / "scripts" / name, SKILL / "scripts" / name)
     for ref in (REPO / "skills" / "sector-forge" / "references").glob("*.md"):
         shutil.copyfile(ref, SKILL / "references" / ref.name)
-    shutil.copyfile(REPO / "examples" / "derelict-station.json",
-                    SKILL / "examples" / "derelict-station.json")
+    for spec in (REPO / "examples").glob("*.json"):
+        shutil.copyfile(spec, SKILL / "examples" / spec.name)
     if not (SKILL / "SKILL.md").exists():
         raise SystemExit("ERROR: dist/skill/sector-forge/SKILL.md is missing "
                          "(it is hand-maintained — restore it before packaging).")

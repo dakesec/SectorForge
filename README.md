@@ -9,6 +9,18 @@ any **Universal VTT**-compatible tabletop (Roll20, Fantasy Grounds, Arkenforge�
 
 ![Example: derelict station](examples/derelict-station-preview.png)
 
+Maze/warren layouts and organic texturing (`eldritch_void` theme) — winding
+corridors, branches, and dead ends, with mottled stone, cracks, wall growth, and
+spores:
+
+![Example: eldritch warren](examples/eldritch-warren-preview.png)
+
+> The procedural renderer is deterministic vector art — much richer than flat
+> tiles, but not hand-painted. For a fully painted, illustrated look, use the
+> **hybrid path**: the engine carries the layout + walls/lights, an image
+> generator paints the background from the emitted prompt, and `repack_image.py`
+> recombines them so Foundry walls still work.
+
 > LLM for creativity, code for VTT-data correctness: Claude never hand-places
 > walls — they're derived from the floor boundary, so line-of-sight and lighting
 > just work on import.

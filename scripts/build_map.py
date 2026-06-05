@@ -196,26 +196,44 @@ def export_foundry(spec, model, image_rel, width_px, height_px, cell_px):
         "lights": lights,
         "tokens": [], "notes": [], "sounds": [], "drawings": [],
         "tiles": [], "templates": [], "regions": [],
-        "flags": {"sector-forge": {"version": "0.3.0", "foundryTarget": "v13-v14"}},
+        "flags": {"sector-forge": {"version": "0.4.0", "foundryTarget": "v13-v14"}},
     }
 
 
 # --- ComfyUI / z-image hybrid prompt -----------------------------------------
 
+# Per-theme art direction for the hybrid (AI-painted background) path.
+_THEME_ART = {
+    "clean_ship": "sleek functional starship interior, brushed-steel bulkheads, "
+                  "blue panel flooring, glowing consoles, airlocks and blast doors",
+    "derelict_industrial": "abandoned mining hulk, rusted corroded metal, grime and "
+                           "debris, flickering amber emergency strips, broken panels",
+    "station_lab": "sterile research station, white ceramic panels, teal holographic "
+                   "readouts, clean labs and containment pods",
+    "military_bunker": "hardened military deck, gun-metal armor plating, olive stencils, "
+                       "blast doors, ammo crates and barricades",
+    "alien_organic": "biomechanical alien hive, chitinous walls, pulsing veins, "
+                     "translucent membranes, bioluminescent growths",
+    "eldritch_void": "ancient alien temple adrift in the void, intricately carved "
+                     "obsidian and dark-violet stone, glowing arcane glyphs and "
+                     "mandalas, bioluminescent teal fungal growth and creeping tendrils, "
+                     "cracked flagstones, a purple nebula visible through a broken ceiling",
+}
+
+
 def build_art_prompt(spec, model):
-    theme = spec.get("theme", "clean_ship").replace("_", " ")
-    rooms = ", ".join(
-        r.get("label", r["id"]) for r in model["rooms"].values()
-    )
+    theme_key = spec.get("theme", "clean_ship")
+    art = _THEME_ART.get(theme_key, _THEME_ART["clean_ship"])
+    rooms = ", ".join(r.get("label", r["id"]) for r in model["rooms"].values())
     w, h = spec["size"]["w"], spec["size"]["h"]
+    mazey = " labyrinthine corridors with branching dead ends," if spec.get("maze") else ""
     return (
-        f"top-down orthographic battle map, sci-fi {theme} interior, "
-        f"spaceship/station deck plan, {w}x{h} grid tiles, "
-        f"rooms: {rooms}. Metal bulkheads, panel flooring, glowing consoles, "
-        f"airlocks and blast doors, cabling and vents. "
-        f"Clean tactical VTT map, high contrast, even lighting, sharp grid alignment, "
+        f"top-down orthographic battle map, {art}. "
+        f"{w}x{h} grid tiles,{mazey} chambers: {rooms}. "
+        f"Heavily textured organic surfaces, ornate detail, atmospheric volumetric glow, "
+        f"high contrast, even readable lighting, sharp top-down grid alignment, "
         f"no perspective, no characters, no tokens, highly detailed, 4k. "
-        f"NEGATIVE: isometric, perspective, people, text, watermark, blurry"
+        f"NEGATIVE: isometric, perspective, people, text, watermark, blurry, flat"
     )
 
 

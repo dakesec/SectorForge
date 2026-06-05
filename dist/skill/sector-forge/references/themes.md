@@ -11,8 +11,19 @@ Each theme sets the palette for void, floors, panel seams, walls, and accents.
 | `station_lab`         | Sterile research station | Light grey-blue, white bulkheads, teal accents. |
 | `military_bunker`     | Hardened military deck | Olive-grey, gun-metal walls, chartreuse accents. |
 | `alien_organic`       | Bio-engineered / hive | Purple-teal biotech, organic curves, green glow. |
+| `eldritch_void`       | Cosmic-horror carved stone | Dark slate-violet stone, teal + violet bioluminescence. Organic texturing is **on by default** for this theme. |
 
 Choose the theme that matches the mood; you can still recolor lights per-fixture.
+
+## Organic texturing (`texture`)
+
+Set top-level `"texture": true` (on by default for `eldritch_void`) to render
+mottled stone instead of flat panels, plus cracks, glowing growth clustered along
+walls, scattered spores, and edge vignetting — for ancient/derelict/alien spaces.
+For the fully painted, hand-illustrated look (carved reliefs, vines, volumetric
+light) use the **hybrid path**: the procedural map carries the layout + walls, and
+an image generator paints the background from `<name>.prompt.txt`, then
+`repack_image.py` recombines it with the VTT data.
 
 ## Floor types (`floor` field on a room)
 
