@@ -1,0 +1,24 @@
+{
+  "$schema": "https://anthropic.com/claude-code/marketplace.schema.json",
+  "name": "sectorforge",
+  "description": "SectorForge — AI-directed sci-fi dungeon/station tile mapper that exports VTT-ready maps (Universal VTT + Foundry v13/v14).",
+  "owner": {
+    "name": "dakesec",
+    "email": "christifer.mulford@gmail.com",
+    "url": "https://github.com/dakesec"
+  },
+  "plugins": [
+    {
+      "name": "sector-forge",
+      "description": "Turn narrative direction into VTT-ready sci-fi battlemaps. Claude designs the deck layout; a deterministic engine renders a top-down map and auto-derives walls, doors, and dynamic lighting, exporting Universal VTT (.dd2vtt) and native Foundry VTT v13/v14 scene JSON. Supports circular/non-rectangular rooms and entrance-matching doors.",
+      "version": "0.3.0",
+      "author": {
+        "name": "dakesec"
+      },
+      "category": "design",
+      "keywords": ["rpg", "vtt", "foundry", "dungeon", "map", "scifi", "battlemap", "uvtt"],
+      "source": "./",
+      "homepage": "https://github.com/dakesec/SectorForge"
+    }
+  ]
+}

@@ -24,17 +24,33 @@ any **Universal VTT**-compatible tabletop (Roll20, Fantasy Grounds, Arkenforge�
 
 ## Install
 
-A local Claude Code plugin.
+SectorForge is a Claude Code plugin. It does **not** need a server — this git
+repo is all the "hosting" required. The repo is both a plugin (at the root) and a
+one-plugin marketplace (`.claude-plugin/marketplace.json`).
 
-1. Requirements: **Python 3.9+** and **Pillow** (`pip install Pillow`).
-2. Clone this repo and add it as a plugin (point a local marketplace at it, or
-   copy the folder into your Claude Code plugins directory). The plugin lives at
-   the repo root (`.claude-plugin/plugin.json`).
-3. Verify the engine:
-   ```bash
-   python scripts/build_map.py examples/derelict-station.json --out out
-   ```
-   You should get a PNG, a `.dd2vtt`, a `.fvtt.json`, and a prompt in `out/`.
+**Requirements:** **Python 3.9+** and **Pillow** (`pip install Pillow`).
+
+**Install from GitHub** (in Claude Code):
+```
+/plugin marketplace add dakesec/SectorForge
+/plugin install sector-forge@sectorforge
+```
+
+**Install from a local clone** (no GitHub needed) — point the marketplace at the
+folder instead:
+```
+/plugin marketplace add /absolute/path/to/SectorForge
+/plugin install sector-forge@sectorforge
+```
+
+After installing, restart Claude Code if prompted. Then use `/dungeon …` or just
+ask for a sci-fi battlemap.
+
+**Verify the engine** (optional, standalone):
+```bash
+python scripts/build_map.py examples/derelict-station.json --out out
+```
+You should get a PNG, a `.dd2vtt`, a `.fvtt.json`, and a prompt in `out/`.
 
 ## Use
 
