@@ -102,6 +102,8 @@ version-independent.
 
 ## Extending
 
+- **New room shape:** add a `_<shape>_cells` rasterizer in `geometry.py` and wire
+  it into `room_cells`; document it in the schema reference.
 - **New theme:** add a palette entry to `render.THEMES` and document it in
   `skills/sector-forge/references/themes.md`.
 - **New prop:** add a branch in `render._draw_prop` and list it in `themes.md`
@@ -110,8 +112,22 @@ version-independent.
 - **Schema changes:** update `skills/sector-forge/references/map-spec-schema.md`
   (it is the contract Claude reads when authoring specs).
 
-## Known limitations (v0.2)
+## Rooms, regions & entrances (v0.3)
 
-- Rooms are rectangles; compose/overlap for L/T/cross shapes.
+- **Room shapes**: `geometry.room_cells` rasterizes `rect`/`circle`/`ellipse`/
+  `diamond`/`octagon`/`poly` to a cell set. Wall derivation is shape-agnostic
+  because it operates on the floor/non-floor cell boundary.
+- **Regions**: every floor cell maps to a region id (room id or corridor id) via
+  `build_occupancy`. Room cells win over corridor cells on overlap.
+- **Entrances**: `detect_entrances` finds runs of edges between adjacent cells of
+  different regions — i.e. the openings. Connection doors `{from,to}` use a BFS
+  over the region-adjacency graph (`_first_hop`) to pick the right opening and
+  span a single door across it. Explicit `{x,y,side}` doors snap to the nearest
+  opening/wall within ~1 cell, else warn. `derive()` returns a `warnings` list
+  that `build_map.py` prints to stderr.
+
+## Known limitations (v0.3)
+
+- Round/diagonal rooms have stair-stepped (cell-aligned) walls by design.
 - Props are decorative (non-collidable); model sight-blockers as tiny rooms.
 - Single deck per spec; multi-level stations = one spec per deck.

@@ -60,12 +60,11 @@ def render(model, spec, out_path):
     d = ImageDraw.Draw(img, "RGBA")
 
     floor = model["floor"]
-    floor_kind = {}  # cell -> floor variant from owning room
+    floor_kind = {}  # cell -> floor variant from owning room (any shape)
     for room in model["rooms"].values():
         kind = room.get("floor", "plating")
-        for cy in range(room["y"], room["y"] + room["h"]):
-            for cx in range(room["x"], room["x"] + room["w"]):
-                floor_kind[(cx, cy)] = kind
+        for c in room.get("_cells", ()):
+            floor_kind[c] = kind
 
     # --- floor tiles ---
     for (cx, cy) in floor:

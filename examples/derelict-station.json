@@ -2,16 +2,18 @@
   "name": "Derelict Station Kessler-9",
   "theme": "derelict_industrial",
   "ambient": "#0a0a12",
+  "darkness": 0,
   "grid": { "cell_px": 140, "distance": 5, "units": "ft", "overlay": true },
-  "size": { "w": 30, "h": 22 },
+  "size": { "w": 38, "h": 24 },
 
   "rooms": [
-    { "id": "airlock",  "x": 1,  "y": 9,  "w": 3, "h": 4, "label": "Airlock",        "floor": "hazard" },
-    { "id": "junction", "x": 6,  "y": 8,  "w": 5, "h": 6, "label": "Main Junction",  "floor": "plating" },
-    { "id": "medbay",   "x": 6,  "y": 1,  "w": 7, "h": 5, "label": "Med-Bay",        "floor": "tile" },
-    { "id": "quarters", "x": 6,  "y": 16, "w": 8, "h": 5, "label": "Crew Quarters",  "floor": "plating" },
-    { "id": "reactor",  "x": 20, "y": 7,  "w": 8, "h": 8, "label": "Reactor Core",   "floor": "grating" },
-    { "id": "bridge",   "x": 20, "y": 1,  "w": 7, "h": 4, "label": "Bridge",         "floor": "tile" }
+    { "id": "airlock",  "x": 1,  "y": 10, "w": 3, "h": 4, "label": "Airlock",          "floor": "hazard" },
+    { "id": "junction", "x": 6,  "y": 9,  "w": 6, "h": 6, "label": "Main Junction",    "floor": "plating", "shape": "octagon" },
+    { "id": "medbay",   "x": 6,  "y": 2,  "w": 7, "h": 5, "label": "Med-Bay",          "floor": "tile" },
+    { "id": "quarters", "x": 5,  "y": 17, "w": 8, "h": 5, "label": "Crew Quarters",    "floor": "plating" },
+    { "id": "reactor",  "x": 18, "y": 8,  "w": 9, "h": 9, "label": "Reactor Chamber",  "floor": "grating", "shape": "circle" },
+    { "id": "bridge",   "x": 29, "y": 2,  "w": 8, "h": 5, "label": "Bridge",           "floor": "tile" },
+    { "id": "obs",      "x": 30, "y": 15, "w": 7, "h": 7, "label": "Observation Dome", "floor": "tile",    "shape": "ellipse" }
   ],
 
   "corridors": [
@@ -19,33 +21,36 @@
     { "from": "junction", "to": "medbay",   "width": 2 },
     { "from": "junction", "to": "quarters", "width": 2 },
     { "from": "junction", "to": "reactor",  "width": 3 },
-    { "from": "reactor",  "to": "bridge",   "width": 2 }
+    { "from": "reactor",  "to": "bridge",   "width": 2 },
+    { "from": "reactor",  "to": "obs",      "width": 2 }
   ],
 
   "doors": [
-    { "x": 4,  "y": 10, "side": "e", "type": "airlock", "state": "closed" },
-    { "x": 8,  "y": 6,  "side": "s", "type": "door",    "state": "closed" },
-    { "x": 8,  "y": 16, "side": "n", "type": "door",    "state": "closed" },
-    { "x": 20, "y": 10, "side": "w", "type": "blast",   "state": "closed" },
-    { "x": 23, "y": 5,  "side": "n", "type": "door",    "state": "closed" }
+    { "from": "airlock",  "to": "junction", "type": "airlock", "state": "closed" },
+    { "from": "medbay",   "to": "junction", "type": "door",    "state": "closed" },
+    { "from": "quarters", "to": "junction", "type": "door",    "state": "closed" },
+    { "from": "reactor",  "to": "junction", "type": "blast",   "state": "closed" },
+    { "from": "bridge",   "to": "reactor",  "type": "door",    "state": "closed" },
+    { "from": "obs",      "to": "reactor",  "type": "door",    "state": "closed" }
   ],
 
   "lights": [
-    { "x": 24, "y": 11, "range": 7, "color": "#ff7a1a", "intensity": 1.0, "animation": "torch" },
-    { "x": 9,  "y": 3,  "range": 5, "color": "#9fe8ff", "intensity": 0.8 },
-    { "x": 23, "y": 3,  "range": 5, "color": "#9fe8ff", "intensity": 0.8 },
-    { "x": 9,  "y": 18, "range": 4, "color": "#ffd9a0", "intensity": 0.6 }
+    { "x": 22.5, "y": 12.5, "range": 8, "color": "#ff7a1a", "intensity": 1.0, "animation": "torch" },
+    { "x": 9,    "y": 4,    "range": 5, "color": "#9fe8ff", "intensity": 0.8 },
+    { "x": 33,   "y": 4,    "range": 5, "color": "#9fe8ff", "intensity": 0.8 },
+    { "x": 9,    "y": 19,   "range": 4, "color": "#ffd9a0", "intensity": 0.6 },
+    { "x": 33.5, "y": 18.5, "range": 5, "color": "#7affc8", "intensity": 0.7, "animation": "pulse" }
   ],
 
   "props": [
-    { "type": "reactor",  "x": 23, "y": 10 },
-    { "type": "console",  "x": 21, "y": 2 },
-    { "type": "console",  "x": 25, "y": 2 },
-    { "type": "bed",      "x": 7,  "y": 18 },
-    { "type": "bed",      "x": 9,  "y": 18 },
-    { "type": "bed",      "x": 11, "y": 18 },
-    { "type": "terminal", "x": 7,  "y": 2 },
-    { "type": "crate",    "x": 7,  "y": 12 },
-    { "type": "crate",    "x": 9,  "y": 12 }
+    { "type": "reactor",  "x": 22, "y": 12 },
+    { "type": "console",  "x": 30, "y": 3 },
+    { "type": "console",  "x": 35, "y": 3 },
+    { "type": "bed",      "x": 6,  "y": 19 },
+    { "type": "bed",      "x": 8,  "y": 19 },
+    { "type": "bed",      "x": 10, "y": 19 },
+    { "type": "terminal", "x": 7,  "y": 3 },
+    { "type": "console",  "x": 33, "y": 18 },
+    { "type": "crate",    "x": 7,  "y": 12 }
   ]
 }

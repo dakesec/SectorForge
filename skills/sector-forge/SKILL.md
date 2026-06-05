@@ -50,11 +50,17 @@ reference, and `references/themes.md` for theme palettes and prop/floor options.
 Layout rules of thumb:
 - Keep rooms inside `0..size.w` / `0..size.h`; leave a 1-cell margin so walls
   aren't flush with the image edge.
-- Rooms are rectangles. For non-rectangular spaces, overlap several rooms.
+- Rooms can be any **`shape`**: `rect` (default), `circle`/`ellipse`, `diamond`,
+  `octagon`, or `poly` (arbitrary `points`). `x,y,w,h` is the bounding box. Use a
+  circular reactor, an octagonal hub, a domed observatory — overlap shapes to
+  compose lobed/complex spaces. Walls and line-of-sight auto-follow any shape.
 - Connect rooms with `corridors` using `{ "from": "...", "to": "...", "width": N }`
   (auto L-routes between room centers) — quick and reliable.
-- Put a **door** on the wall where a corridor meets a room, using the cell just
-  inside the room and the `side` facing the corridor (`n/s/e/w`).
+- **Place doors with the connection form** `{ "from": "roomA", "to": "roomB",
+  "type": "blast" }`. The engine finds the actual opening between them and spans
+  a door across it, so doors always match the entrance — no manual coordinates.
+  (Explicit `{x,y,side}` doors still work and snap to the nearest opening; or set
+  top-level `"autoDoors": true` to seal every room↔corridor opening at once.)
 - Add **lights** at fixtures and hazards; range is in cells.
 - Add **props** for readability (consoles, reactor, beds/pods, crates, terminals).
 - For a dark, lights-only scene (derelict, power-out), set top-level

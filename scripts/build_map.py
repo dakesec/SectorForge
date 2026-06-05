@@ -196,7 +196,7 @@ def export_foundry(spec, model, image_rel, width_px, height_px, cell_px):
         "lights": lights,
         "tokens": [], "notes": [], "sounds": [], "drawings": [],
         "tiles": [], "templates": [], "regions": [],
-        "flags": {"sector-forge": {"version": "0.2.0", "foundryTarget": "v13-v14"}},
+        "flags": {"sector-forge": {"version": "0.3.0", "foundryTarget": "v13-v14"}},
     }
 
 
@@ -242,6 +242,8 @@ def main(argv=None):
     cell_px = int(spec["grid"]["cell_px"])
 
     model = geometry.derive(spec)
+    for w in model.get("warnings", []):
+        print(f"[warn]   {w}", file=sys.stderr)
 
     if args.prompt_only:
         prompt = build_art_prompt(spec, model)

@@ -109,7 +109,12 @@ SectorForge/
 ```
 
 ## Notes & limitations
-- Rooms are rectangles (compose/overlap for complex shapes); v0.2.
+- Rooms can be **rect, circle/ellipse, diamond, octagon, or polygon** — overlap
+  shapes to compose complex spaces. Round rooms are grid-aligned (stair-stepped),
+  matching how VTT walls and line-of-sight work.
+- Doors use the **connection form** `{from, to}` and snap to the actual opening
+  between rooms, so they always line up with the passage. `autoDoors` seals every
+  room↔corridor opening at once.
 - Props are decorative (non-collidable). Model sight-blockers as tiny rooms.
 - Foundry's scene schema shifts across major versions; the `.dd2vtt` path is the
   most version-stable. The Foundry JSON targets v13/v14.
